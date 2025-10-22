@@ -1,6 +1,6 @@
 main/
 pache/
 venv/
-dag_id=abc_processo_temperatura/*
-airflow/logs/dag_processor/*
+airflow/logs/dag_id=abc_processo_temperatura/*
+airflow/logs/dag_processor/2025-10-22/
 .cache.sqlite
