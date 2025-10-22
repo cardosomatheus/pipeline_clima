@@ -1,0 +1,6 @@
+main/
+pache/
+venv/
+airflow/logs/*
+
+.cache.sqlite
