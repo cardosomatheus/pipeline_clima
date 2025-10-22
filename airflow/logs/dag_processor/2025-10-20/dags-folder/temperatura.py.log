@@ -1,0 +1,6 @@
+{"timestamp":"2025-10-20T21:29:14.926867Z","level":"info","event":"Filling up the DagBag from /opt/airflow/dags/temperatura.py","logger":"airflow.models.dagbag.DagBag","filename":"dagbag.py","lineno":593}
+{"timestamp":"2025-10-20T21:29:45.922415Z","level":"info","event":"Filling up the DagBag from /opt/airflow/dags/temperatura.py","logger":"airflow.models.dagbag.DagBag","filename":"dagbag.py","lineno":593}
+{"timestamp":"2025-10-20T21:30:16.949628Z","level":"info","event":"Filling up the DagBag from /opt/airflow/dags/temperatura.py","logger":"airflow.models.dagbag.DagBag","filename":"dagbag.py","lineno":593}
+{"timestamp":"2025-10-20T21:30:39.870412Z","level":"info","event":"Filling up the DagBag from /opt/airflow/dags/temperatura.py","logger":"airflow.models.dagbag.DagBag","filename":"dagbag.py","lineno":593}
+{"timestamp":"2025-10-20T21:31:09.968459Z","level":"info","event":"Filling up the DagBag from /opt/airflow/dags/temperatura.py","logger":"airflow.models.dagbag.DagBag","filename":"dagbag.py","lineno":593}
+{"timestamp":"2025-10-20T21:31:40.154087Z","level":"info","event":"Filling up the DagBag from /opt/airflow/dags/temperatura.py","logger":"airflow.models.dagbag.DagBag","filename":"dagbag.py","lineno":593}

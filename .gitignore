@@ -1,6 +1,6 @@
 main/
 pache/
 venv/
-airflow/logs/*
+airflow/logs/dag_id=abc_processo_temperatura/
 
 .cache.sqlite
