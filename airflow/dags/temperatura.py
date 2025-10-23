@@ -1,21 +1,16 @@
 from airflow.sdk import dag, task
-from airflow.providers.standard.operators.bash import BashOperator
+from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 import requests
 from datetime import datetime
+
 
 @dag(
     schedule=None,
     start_date= datetime(2025,10,10),
     catchup=False,
-    tags=["Clima", "Temperatura","pipeline"],
+    tags=["Clima2", "Temperatura","pipeline", "postgres"],
 )
 def abc_processo_temperatura():
-
-    bash_time_sleep = BashOperator(
-        task_id='sleeping3seconds',
-        bash_command='sleep 3'
-    )
-
 
     @task()
     def start_process():
@@ -24,6 +19,11 @@ def abc_processo_temperatura():
         print('='*vtamanho)
         print(f'={texto}=')
         print('='*vtamanho)
+
+
+    @task.bash
+    def bash_time_sleep( value_int :int) -> str:
+        return f'sleep {value_int}'
 
 
     @task()
@@ -37,7 +37,7 @@ def abc_processo_temperatura():
 
         if not isinstance(latitude,float) or not isinstance(longitude,float):
             raise Exception('Longitude  e latitude precisam ser um numeros quebrados', longitude, latitude)
-                 
+                
         return f'https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&hourly=temperature_2m&timezone=America%2FSao_Paulo&start_date={textual_date}&end_date={textual_date}'
 
 
@@ -66,11 +66,28 @@ def abc_processo_temperatura():
             list_temperature_to_hours.append(dict_temperature_to_hours)
         
         dict_return['temperature_to_hour'] = list_temperature_to_hours
-    
 
-    vurl = start_process() >> bash_time_sleep >> construct_url_temperature()
+
+    table_temperatura = SQLExecuteQueryOperator(
+        task_id='table_temperatura',
+        conn_id='conn_airflow_postgres',
+        sql='sql/table_temperature.sql'
+    )
+
+    """
+    Pendencias:
+     - fazer o merge de insert, update
+     - criar grupo para as tarefas
+     - definir retrys
+     - documentar cada task
+     - Definir mais params no Dag ex: description
+     - Definir mais params nas tasks ex: execution_timeout
+    """
+
+
+    vurl = [start_process(), bash_time_sleep(value_int=3), construct_url_temperature()]
     vdict_return = get_temperature_to_hour(url=vurl)
-    extract_hourly_temperatures(vdict_return)
+    extract_hourly_temperatures(vdict_return) >> table_temperatura
 
 
 abc_processo_temperatura()

@@ -1,7 +1,8 @@
 main/
-pache/
+__pycache__/
 venv/
-airflow/logs/dag_id=abc_processo_temperatura/*
-airflow/logs/dag_processor/2025-10-22/
-airflow/logs/dag_processor/latest/
+airflow/dags/__pycache__
+airflow/logs/
+airflow/logs/dag_processor/
+
 .cache.sqlite
