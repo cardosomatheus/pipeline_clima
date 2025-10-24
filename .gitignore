@@ -1,6 +1,5 @@
 main/
 __pycache__/
-venv/
 airflow/dags/__pycache__
 airflow/logs/
 airflow/logs/dag_processor/

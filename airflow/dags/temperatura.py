@@ -1,29 +1,32 @@
 from airflow.sdk import dag, task
 from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 import requests
+import json 
 from datetime import datetime
 
+"""
+Pendencias de melhorias do projeto de estudo:
+    - fazer o merge de insert, update
+    - criar grupo para as tarefas
+    - definir retrys
+    - documentar cada task
+    - Definir mais params no Dag ex: description
+    - Definir mais params nas tasks ex: execution_timeout
+"""
 
 @dag(
     schedule=None,
     start_date= datetime(2025,10,10),
     catchup=False,
-    tags=["Clima2", "Temperatura","pipeline", "postgres"],
+    tags=["Clima", "Temperatura","pipeline", "postgres"],
 )
 def abc_processo_temperatura():
-
-    @task()
-    def start_process():
-        texto = 'Iniciando processo de busca de temperatura a cada hora!!'
-        vtamanho = len(texto)+2
-        print('='*vtamanho)
-        print(f'={texto}=')
-        print('='*vtamanho)
+    vdict_return = None
 
 
     @task.bash
-    def bash_time_sleep( value_int :int) -> str:
-        return f'sleep {value_int}'
+    def bash_start_pipeline( value_int :int) -> str:
+        return f'echo "Iniciando a pipeline!!" && sleep {value_int}'
 
 
     @task()
@@ -74,20 +77,18 @@ def abc_processo_temperatura():
         sql='sql/table_temperature.sql'
     )
 
-    """
-    Pendencias:
-     - fazer o merge de insert, update
-     - criar grupo para as tarefas
-     - definir retrys
-     - documentar cada task
-     - Definir mais params no Dag ex: description
-     - Definir mais params nas tasks ex: execution_timeout
-    """
+    merge_temperatura = SQLExecuteQueryOperator(
+        task_id='merge_temperatura',
+        conn_id='conn_airflow_postgres',
+        sql='sql/merge_temperature.sql',
+        parameters={"CONTEUDO_JSON": json.dumps(vdict_return)}
+    )
 
 
-    vurl = [start_process(), bash_time_sleep(value_int=3), construct_url_temperature()]
+
+    vurl =  bash_start_pipeline(value_int=3) >> construct_url_temperature()
     vdict_return = get_temperature_to_hour(url=vurl)
-    extract_hourly_temperatures(vdict_return) >> table_temperatura
+    extract_hourly_temperatures(vdict_return) >> table_temperatura >> merge_temperatura
 
 
 abc_processo_temperatura()
