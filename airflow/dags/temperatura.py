@@ -14,12 +14,11 @@ from datetime import datetime, timedelta
     start_date=datetime(2025,10,10),
     end_date=datetime(2027,1,1),
     catchup=False,
+    default_args={'retries':2},
     tags=["Clima", "Temperatura","pipeline", "postgres"]
 )
 def processo_temperatura():
-    empty_task = EmptyOperator(
-        task_id='Empty_task'
-    )
+    empty_task = EmptyOperator(task_id='Empty_task')
 
     @task.bash
     def bash_start_pipeline( value_int :int) -> str:
@@ -103,7 +102,7 @@ def processo_temperatura():
     loading_task   = load_hourly_temperatures_today(url_task)
     mapping_task   = mapping_hourly_temperatures(loading_task)
 
-    [empty_task, bash_start, url_task] >> loading_task >> mapping_task >> group_database_postgres() # create_table_temperatures  >> merge_hourly_temperatures
+    [empty_task, bash_start, url_task] >> loading_task >> mapping_task >> group_database_postgres() 
 
 
 processo_temperatura()
